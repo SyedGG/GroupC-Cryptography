@@ -1,44 +1,42 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Key-shifting Substitution</title>
-  </head>
-  <body>
-    <h2>Text to <select id="which" oninput="updateResult()"> <option>Encrypt</option> <option>Decrypt</option> </select></h2>
-    <textarea id="input" oninput="updateResult()"></textarea>
-    <h2>Key</h2>
-    <input id="key" oninput="this.value = this.value.replace(/[^a-z]/gi, '').toUpperCase(); updateResult()">
-    
-    <h2>Resulting Text</h2>
-    <textarea readonly id="result"></textarea>
-    
-    <script>
-      const char_A = 'A'.charCodeAt(0);
-      const char_a = 'a'.charCodeAt(0);
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="box-container">
+            <div class="label">Plain Text</div>
+            <div class="textarea-wrapper">
+                <textarea id="plain-text" placeholder="Type plain text here..."></textarea>
+                <canvas id="plain-canvas"></canvas>
+            </div>
+        </div>
 
-      function updateResult() {
-        const isEncrypt = document.getElementById('which').value === 'Encrypt';
-        const inputText = document.getElementById('input').value;
-        const key = document.getElementById('key').value;
-        
-        const substitutions = (key + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-          .split('')
-          .filter((c, i, arr) => arr.indexOf(c) === i); // remove duplicate letters
-        
-        let result;
-        if (isEncrypt) {
-          result = inputText
-            .replace(/[A-Z]/g, letter => substitutions[letter.charCodeAt(0) - char_A])
-            .replace(/[a-z]/g, letter => substitutions[letter.charCodeAt(0) - char_a].toLowerCase());
-        } else {
-          result = inputText
-            .replace(/[A-Z]/g, letter => String.fromCharCode(char_A + substitutions.indexOf(letter)))
-            .replace(/[a-z]/g, letter => String.fromCharCode(char_a + substitutions.indexOf(letter.toUpperCase())));
-        }
-        
-        document.getElementById('result').value = result;
-      }
-    </script>
-    
-  </body>
+        <div class="controls">
+            <button onclick="triggerEncrypt()" class="action-btn">Encrypt &rarr;</button>
+            <button onclick="triggerDecrypt()" class="action-btn">&larr; Decrypt</button>
+        </div>
+
+        <div class="box-container">
+            <div class="label">Cipher Text</div>
+            <div class="textarea-wrapper">
+                <textarea id="cipher-text" placeholder="Type cipher text here..."></textarea>
+                <canvas id="cipher-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="key-container">
+        <div class="key-head">
+            <input id="key-input" type="text" placeholder="KEY" oninput="updateFromKey()" maxlength="10">
+        </div>
+        <div class="key-shaft">
+            <div class="key-teeth"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
